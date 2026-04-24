@@ -44,7 +44,7 @@ import com.valentinerutto.nightlife.data.TicketType
 fun TicketSelectionContent(
     event: Event,
     state: BookingUiState,
-    onBack: () -> Boolean,
+    onBack: () -> Unit,
     onSelectTicket: (TicketType) -> Unit,
     onChangeQty: (Int) -> Unit,
     onBookNow: () -> Unit

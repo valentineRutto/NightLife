@@ -15,11 +15,11 @@ import com.valentinerutto.nightlife.ui.EventDetailsViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun EventDetailsScreen(eventId: String, event: Event, onBack: () -> Boolean, viewModel: EventDetailsViewModel=koinViewModel()) {
-
+fun EventDetailsScreen(eventId: String, onBack: () -> Unit) {
+    val viewModel: EventDetailsViewModel=koinViewModel()
     val bookingState by viewModel.bookingState.collectAsStateWithLifecycle()
 
-
+val event = viewModel.eventByID(eventId)
 
     AnimatedContent(
         targetState = bookingState.step,
@@ -53,6 +53,9 @@ fun EventDetailsScreen(eventId: String, event: Event, onBack: () -> Boolean, vie
                 state = bookingState,
                 onDone = onBack
             )
+
+            else -> {}
         }
+
     }
 }

@@ -36,7 +36,6 @@ fun NavGraph() {
             EventDetailsScreen(
                 eventId = eventId,
                 onBack = { navController.popBackStack() },
-                onBookNow = {  },
             )
         }
     }

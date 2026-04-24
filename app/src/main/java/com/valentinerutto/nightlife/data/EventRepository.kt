@@ -12,7 +12,8 @@ class EventRepository(
 ){
      fun getEvents():Flow<List<Event>> =
         dao.getEvents().map { it.map { e -> e.toDomain() } }
-
+fun getEventsByID(id:String):Event =
+    dao.getEventByID(id).toDomain()
     suspend fun fetchEvents() {
         try {
 

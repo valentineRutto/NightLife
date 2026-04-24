@@ -43,6 +43,7 @@ class EventDetailsViewModel(private val repository: EventRepository)
         if (errors.isEmpty()) goToStep(BookingStep.Confirm)
         else _bookingState.update { it.copy(errors = errors) }
     }
+    fun eventByID(id: String) = repository.getEventsByID(id)
 
     fun confirmBooking() {
         viewModelScope.launch {
