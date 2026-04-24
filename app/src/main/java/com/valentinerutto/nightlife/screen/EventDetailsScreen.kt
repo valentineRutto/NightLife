@@ -17,6 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.valentinerutto.nightlife.MyApplication
+import com.valentinerutto.nightlife.NotificationPermissionHelper
 import com.valentinerutto.nightlife.data.BookingStep
 import com.valentinerutto.nightlife.data.Event
 import com.valentinerutto.nightlife.ui.EventDetailsViewModel
@@ -28,7 +30,6 @@ fun EventDetailsScreen(eventId: String, onBack: () -> Unit) {
     val bookingState by viewModel.bookingState.collectAsStateWithLifecycle()
 
 val event = viewModel.eventByID(eventId)
-
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -37,6 +38,7 @@ val event = viewModel.eventByID(eventId)
         } else {
         }
     }
+
 
     AnimatedContent(
         targetState = bookingState.step,
@@ -65,7 +67,14 @@ val event = viewModel.eventByID(eventId)
                 event = event,
                 state = bookingState,
                 onBack = { viewModel.goToStep(BookingStep.Form) },
-                onConfirm = viewModel::confirmBooking
+                onConfirm = {
+                    if (NotificationPermissionHelper.isGranted(MyApplication.INSTANCE)) {
+                        viewModel.confirmBooking()
+                    } else {
+                        permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    }
+
+                            },
             )
             BookingStep.Success -> SuccessContent(
                 state = bookingState,
@@ -77,16 +86,3 @@ val event = viewModel.eventByID(eventId)
     }
 }
 
-object NotificationPermissionHelper {
-
-    fun isGranted(context: Context): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.POST_NOTIFICATIONS
-            ) == PackageManager.PERMISSION_GRANTED
-        } else {
-            true // auto-granted below Android 13
-        }
-    }
-}

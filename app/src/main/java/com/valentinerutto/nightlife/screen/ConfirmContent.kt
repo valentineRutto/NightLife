@@ -1,5 +1,8 @@
 package com.valentinerutto.nightlife.screen
 
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,8 +32,9 @@ fun ConfirmContent(
     event: Event,
     state: BookingUiState,
     onBack: () -> Unit,
-    onConfirm: () -> Unit
+    onConfirm: () -> Unit,
 ) {
+
     Column(modifier = Modifier.fillMaxSize()) {
         BookingTopBar(title = "Confirm booking", onBack = onBack)
         BookingStepIndicator(currentStep = 2)
