@@ -8,7 +8,7 @@ lifecycleRuntimeKtx = "2.6.1"
 activityCompose = "1.8.0"
 kotlin = "2.2.10"
 composeBom = "2024.09.00"
-room = "2.6.1"
+room = "2.7.0"
 koin = "3.5.6"
 koinCompose = "3.5.6"
 retrofit = "2.11.0"
@@ -24,7 +24,8 @@ coroutines = "1.8.1"
 roomKtx = "2.8.4"
 pagingComposeVersion = "3.4.2"
 
-ksp = "2.2.0-2.0.2"
+ksp = "2.0.21-1.0.28"
+
 koin-annotations = "2.2.0"
 navigationCompose = "2.9.7"
 
@@ -64,7 +65,6 @@ kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 # Paging
 paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
 paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "pagingCompose" }
-androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 
 # Room
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
@@ -78,6 +78,7 @@ okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhtt
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 retrofit_gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+navigation-compose        = { group = "androidx.navigation", name = "navigation-compose",          version.ref = "navigationCompose" }
 
 
 androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "pagingComposeVersion" }

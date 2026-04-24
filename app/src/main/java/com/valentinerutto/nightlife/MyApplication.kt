@@ -1,6 +1,30 @@
 package com.valentinerutto.nightlife
 
 import android.app.Application
+import com.valentinerutto.nightlife.di.appModule
+import com.valentinerutto.nightlife.di.databaseModule
+import com.valentinerutto.nightlife.di.networkingModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.GlobalContext.startKoin
+import org.koin.core.logger.Level
 
 class MyApplication: Application() {
-}
+    companion object {
+        lateinit var INSTANCE: MyApplication
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+
+        INSTANCE = this
+
+        startKoin{
+
+            androidLogger( level = Level.DEBUG)
+            androidContext(this@MyApplication)
+            modules(networkingModule, databaseModule, appModule)
+
+        }
+
+    }}

@@ -1,11 +1,10 @@
 plugins {
 
-
-
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlinserialization)
     alias(libs.plugins.ksp)
+
 
 }
 
@@ -72,7 +71,7 @@ dependencies {
     implementation(libs.okhttp.logging)
     implementation(libs.gson)
 
-    implementation(libs.androidx.navigation.compose)
+    implementation(libs.navigation.compose)
     implementation(libs.room.runtime)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.paging.compose)
