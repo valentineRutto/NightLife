@@ -13,8 +13,12 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -42,50 +46,52 @@ val event = viewModel.eventByID(eventId)
 
     val context = LocalContext.current
 
+    Scaffold { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
+            AnimatedContent(
+                targetState = bookingState.step,
+                transitionSpec = {
+                    slideInHorizontally { it } + fadeIn() togetherWith
+                            slideOutHorizontally { -it } + fadeOut()
+                }
+            ) { step ->
+                when (step) {
+                    BookingStep.Details -> TicketSelectionContent(
+                        event = event,
+                        state = bookingState,
+                        onBack = onBack,
+                        onSelectTicket = viewModel::selectTicket,
+                        onChangeQty = viewModel::setQuantity,
+                        onBookNow = { viewModel.goToStep(BookingStep.Form) }
+                    )
+                    BookingStep.Form -> BookingFormContent(
+                        event = event,
+                        state = bookingState,
+                        onBack = { viewModel.goToStep(BookingStep.Details) },
+                        onFieldChange = viewModel::updateField,
+                        onContinue = viewModel::validateAndProceed
+                    )
+                    BookingStep.Confirm -> ConfirmContent(
+                        event = event,
+                        state = bookingState,
+                        onBack = { viewModel.goToStep(BookingStep.Form) },
+                        onConfirm = {
+                            if (NotificationPermissionHelper.isGranted(context)) {
+                                viewModel.confirmBooking()
+                            } else {
+                                permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                            }
 
-    AnimatedContent(
-        targetState = bookingState.step,
-        transitionSpec = {
-            slideInHorizontally { it } + fadeIn() togetherWith
-                    slideOutHorizontally { -it } + fadeOut()
+                        },
+                    )
+                    BookingStep.Success -> SuccessContent(
+                        state = bookingState,
+                        onDone = onBack
+                    )
+
+                }
+
+            }
         }
-    ) { step ->
-        when (step) {
-            BookingStep.Details -> TicketSelectionContent(
-                event = event,
-                state = bookingState,
-                onBack = onBack,
-                onSelectTicket = viewModel::selectTicket,
-                onChangeQty = viewModel::setQuantity,
-                onBookNow = { viewModel.goToStep(BookingStep.Form) }
-            )
-            BookingStep.Form -> BookingFormContent(
-                event = event,
-                state = bookingState,
-                onBack = { viewModel.goToStep(BookingStep.Details) },
-                onFieldChange = viewModel::updateField,
-                onContinue = viewModel::validateAndProceed
-            )
-            BookingStep.Confirm -> ConfirmContent(
-                event = event,
-                state = bookingState,
-                onBack = { viewModel.goToStep(BookingStep.Form) },
-                onConfirm = {
-                    if (NotificationPermissionHelper.isGranted(context)) {
-                        viewModel.confirmBooking()
-                    } else {
-                        permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                    }
-
-                            },
-            )
-            BookingStep.Success -> SuccessContent(
-                state = bookingState,
-                onDone = onBack
-            )
-
-        }
-
-    }
-}
+}}
 

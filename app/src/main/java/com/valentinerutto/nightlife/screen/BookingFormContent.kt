@@ -33,7 +33,6 @@ fun BookingFormContent(
     onContinue: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
-        // Top bar
         BookingTopBar(title = "Your details", onBack = onBack)
         BookingStepIndicator(currentStep = 1)
 
