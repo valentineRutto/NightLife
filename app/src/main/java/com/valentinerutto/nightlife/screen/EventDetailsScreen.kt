@@ -15,6 +15,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.valentinerutto.nightlife.MyApplication
@@ -38,6 +39,8 @@ val event = viewModel.eventByID(eventId)
         } else {
         }
     }
+
+    val context = LocalContext.current
 
 
     AnimatedContent(
@@ -68,7 +71,7 @@ val event = viewModel.eventByID(eventId)
                 state = bookingState,
                 onBack = { viewModel.goToStep(BookingStep.Form) },
                 onConfirm = {
-                    if (NotificationPermissionHelper.isGranted(MyApplication.INSTANCE)) {
+                    if (NotificationPermissionHelper.isGranted(context)) {
                         viewModel.confirmBooking()
                     } else {
                         permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
@@ -78,7 +81,7 @@ val event = viewModel.eventByID(eventId)
             )
             BookingStep.Success -> SuccessContent(
                 state = bookingState,
-                onDone =onBack
+                onDone = onBack
             )
 
         }
