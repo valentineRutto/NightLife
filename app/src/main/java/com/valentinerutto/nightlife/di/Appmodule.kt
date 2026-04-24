@@ -2,6 +2,7 @@ package com.valentinerutto.nightlife.di
 
 import com.google.gson.Gson
 import com.valentinerutto.nightlife.MyApplication
+import com.valentinerutto.nightlife.data.EventRepository
 import com.valentinerutto.nightlife.data.local.NightlifeDatabase
 import com.valentinerutto.nightlife.data.network.NightlifeApiService
 import com.valentinerutto.nightlife.data.network.RetrofitClient
@@ -18,6 +19,7 @@ val appModule = module{
     single { MyApplication.INSTANCE }
     single { Gson() }
     viewModel { EventListViewModel(get()) }
+    single { EventRepository(get(), get()) }
 
     single { NightlifeDatabase.getDatabase(context = androidContext()) }
 

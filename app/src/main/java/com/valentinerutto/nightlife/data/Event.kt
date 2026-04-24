@@ -8,7 +8,7 @@ data class Event(
     val location: String,
     val dateTime: Long,
     val price: Double,
-    val isBookmarked: Boolean = false
+    val isSoldOut: Boolean = false,val category: String
 )
 
 data class Booking(

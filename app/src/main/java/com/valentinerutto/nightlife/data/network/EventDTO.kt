@@ -1,5 +1,7 @@
 package com.valentinerutto.nightlife.data.network
 
+import androidx.collection.IntSet
+
 data class EventDTO(
     val id: String,
     val title: String,
@@ -7,5 +9,7 @@ data class EventDTO(
     val imageUrl: String,
     val location: String,
     val dateTime: Long,
-    val price: Double
+    val price: Double,
+    val isSoldOut: Boolean = false,
+    val category: String
 )

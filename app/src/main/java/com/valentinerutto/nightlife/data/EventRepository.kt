@@ -1,16 +1,44 @@
 package com.valentinerutto.nightlife.data
 
-import androidx.paging.ExperimentalPagingApi
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.map
+import com.valentinerutto.nightlife.data.local.EventDao
+import com.valentinerutto.nightlife.data.local.EventEntity
+import com.valentinerutto.nightlife.data.local.toDomain
 import com.valentinerutto.nightlife.data.network.NightlifeApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class EventRepository(
-    private val api: NightlifeApiService
-) {
+    private val api: NightlifeApiService, private val dao: EventDao
+){
+     fun getEvents():Flow<List<Event>> =
+        dao.getEvents().map { it.map { e -> e.toDomain() } }
 
+    suspend fun fetchEvents() {
+        try {
+
+        val remote = api.getEvents()
+
+        val entities = remote.map {
+
+            EventEntity(
+                it.id,
+                it.title,
+                it.description,
+                it.imageUrl,
+                it.location,
+                it.dateTime,
+                it.price,
+                it.isSoldOut,
+                it.category
+            )
+
+        }
+
+        dao.insertAll(entities)
+
+
+    } catch (e: Exception) {
+        // fallback silently (offline-first)
+    }
+    }
 }

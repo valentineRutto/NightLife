@@ -1,4 +1,4 @@
-package com.valentinerutto.nightlife.Screen
+package com.valentinerutto.nightlife.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -8,6 +8,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,10 +19,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.valentinerutto.nightlife.data.Event
 import com.valentinerutto.nightlife.ui.EventListViewModel
@@ -36,8 +37,9 @@ fun EventlistScreen(
     onEventClick: (String) -> Unit,
     viewModel: EventListViewModel = koinViewModel(),
 ) {
-    val events = listOf("","")
-    val selectedGenre by viewModel.selectedGenre.collectAsState()
+    val events = viewModel.uiState.collectAsStateWithLifecycle()
+    val selectedGenre by viewModel.selectedGenre.collectAsStateWithLifecycle()
+
 
     Scaffold(
         topBar = {
@@ -55,12 +57,15 @@ fun EventlistScreen(
                 bottom = 16.dp,
             ),
         ) {
+            val allGenres = listOf("All") + events.value.genres
+
             item {
+
                 LazyRow(
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    items(viewModel.genres) { genre ->
+                    items(allGenres  ) { genre ->
                         val isSelected = if (genre == "All") selectedGenre == null
                         else genre == selectedGenre
                         FilterChip(
@@ -73,42 +78,43 @@ fun EventlistScreen(
             }
 
             // Loading shimmer on first load
-//            if (events.loadState.refresh is LoadState.Loading) {
-//                items(5) { EventCardSkeleton() }
-//            }
-//
-//            // Error state
-//            if (events.loadState.refresh is LoadState.Error) {
-//                item {
-//                    ErrorBanner(
-//                        message = "Failed to load events. Showing cached data.",
-//                        onRetry = { events.retry() },
-//                    )
-//                }
-//            }
-//
-//            // Event cards
-//            items(count = events.itemCount) { index ->
-//                val event = events[index]
-//                if (event != null) {
-//                    EventCard(
-//                        event = event,
-//                        onClick = { onEventClick(event.id) },
-//                        onBookmark = { viewModel.onToggleBookmark(event.id) },
-//                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
-//                    )
-//                } else {
-//                    EventCardSkeleton()
-//                }
-//            }
+            if (events.value.isLoading) {
+                items(5) { EventCardSkeleton() }
+            }
 
-            // Append loading
-        //    if (events.loadState.append is LoadState.Loading) {
+            // Error state
+            if (events.value.error != null) {
+                item {
+                    ErrorBanner(
+                        message = "Failed to load events. Showing cached data.",
+                        onRetry = { },
+                    )
+                }
+            }
+            if (events.value.events.isNotEmpty() ) {
+
+                // Event cards
+                items(count = events.value.events.size) { index ->
+                    val event = events.value.events.getOrNull(index)
+                    if (event != null) {
+                        EventCard(
+                            event = event,
+                            onClick = { onEventClick(event.id) },
+                            onBookNow = { },
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
+                        )
+                    } else {
+                        EventCardSkeleton()
+                    }
+                }
+            }
+
+           if (events.value.isLoading) {
                 item {
                     Box(modifier = Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator(modifier = Modifier.size(24.dp))
                     }
-             //   }
+                }
             }
         }
     }
@@ -118,7 +124,7 @@ fun EventlistScreen(
 fun EventCard(
     event: Event,
     onClick: () -> Unit,
-    onBookmark: () -> Unit,
+    onBookNow: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val dateFormat = remember { SimpleDateFormat("EEE dd MMM · HH:mm", Locale.getDefault()) }
@@ -164,38 +170,55 @@ fun EventCard(
                         color = MaterialTheme.colorScheme.onError,
                     )
                 }
+            }else{
+                Surface(
+                    modifier = Modifier.align(Alignment.TopStart).padding(12.dp),
+                    color = MaterialTheme.colorScheme.onSecondary,
+                    shape = RoundedCornerShape(6.dp),onClick = onBookNow
+                ) {
+                        Text(
+                        "BOOK NOW",
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                            textAlign = TextAlign.Center,
+                        )
+
+
+                }
+
             }
 
-            // Bookmark button
-            IconButton(
-                onClick = onBookmark,
-                modifier = Modifier.align(Alignment.TopEnd).padding(4.dp),
-            ) {
-//                Icon(
-//                    imageVector = if (event.isBookmarked) Icons.Filled.Bookmark else Icons.Outlined.BookmarkBorder,
-//                    contentDescription = "Bookmark",
-//                    tint = Color.White,
-//                )
-            }
 
-            // Event info at bottom
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(12.dp),
             ) {
-                // Genre chip
                 Surface(
                     color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.85f),
                     shape = RoundedCornerShape(4.dp),
                     modifier = Modifier.padding(bottom = 6.dp),
                 ) {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+
                     Text(
-                        event.genre,
+                     event.category,
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                     )
+                        Spacer(Modifier.width(4.dp))
+                        Text(
+                            "From KES ${priceFormat.format(event.price)}",
+                            style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+                            color = Color.White,
+                        )
+                    }
+
                 }
                 Text(
                     event.title,
@@ -209,17 +232,13 @@ fun EventCard(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(
-                        "${event.venue}  ·  ${dateFormat.format(Date(event.dateTimeEpoch))}",
+                        "${event.description}  ·  ${dateFormat.format(Date(event.dateTime))}",
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.White.copy(alpha = 0.8f),
                         modifier = Modifier.weight(1f),
-                        maxLines = 1,
+                        maxLines = 5,
                     )
-                    Text(
-                        "From KES ${priceFormat.format(event.minPrice)}",
-                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
-                        color = Color.White,
-                    )
+
                 }
             }
         }
