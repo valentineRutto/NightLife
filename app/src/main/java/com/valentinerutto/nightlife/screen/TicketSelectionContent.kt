@@ -52,7 +52,6 @@ fun TicketSelectionContent(
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
 
-            // ── Hero image ──────────────────────────────────────────────
             item {
                 Box(modifier = Modifier.fillMaxWidth().height(280.dp)) {
                     AsyncImage(
