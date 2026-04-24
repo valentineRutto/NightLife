@@ -17,10 +17,7 @@ class EventListViewModel(
 init {
         fetchEvents()
 
-}
-    //private val _uiState = MutableStateFlow(EventUiState())
-   // val uiState: StateFlow<EventUiState> = _uiState.asStateFlow()
-    private val _allEvents = MutableStateFlow<List<Event>>(emptyList())
+} private val _allEvents = MutableStateFlow<List<Event>>(emptyList())
     private val _error = MutableStateFlow<String?>(null)
 
     var genres = emptyList<String>()

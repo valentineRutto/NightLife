@@ -144,8 +144,7 @@ fun EventCard(
                 modifier = Modifier.fillMaxSize(),
             )
 
-            // Gradient scrim
-            Box(
+           Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
@@ -156,7 +155,6 @@ fun EventCard(
                     )
             )
 
-            // Sold out badge
             if (event.isSoldOut) {
                 Surface(
                     modifier = Modifier.align(Alignment.TopStart).padding(12.dp),
@@ -222,6 +220,15 @@ fun EventCard(
                 }
                 Text(
                     event.title,
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    color = Color.White,
+                    maxLines = 1,
+                )
+                Spacer(Modifier.height(2.dp))
+
+                Text(
+
+                    event.location,
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                     color = Color.White,
                     maxLines = 1,

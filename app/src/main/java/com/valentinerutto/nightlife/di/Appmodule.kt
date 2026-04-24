@@ -7,6 +7,7 @@ import com.valentinerutto.nightlife.data.local.NightlifeDatabase
 import com.valentinerutto.nightlife.data.network.NightlifeApiService
 import com.valentinerutto.nightlife.data.network.RetrofitClient
 import com.valentinerutto.nightlife.data.network.RetrofitClient.createOkClient
+import com.valentinerutto.nightlife.ui.EventDetailsViewModel
 import com.valentinerutto.nightlife.ui.EventListViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -20,7 +21,7 @@ val appModule = module{
     single { Gson() }
     viewModel { EventListViewModel(get()) }
     single { EventRepository(get(), get()) }
-
+viewModel{ EventDetailsViewModel(get()) }
     single { NightlifeDatabase.getDatabase(context = androidContext()) }
 
 

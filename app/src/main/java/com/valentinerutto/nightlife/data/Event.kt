@@ -11,17 +11,29 @@ data class Event(
     val isSoldOut: Boolean = false,val category: String
 )
 
-data class Booking(
-    val bookingId: String,
-    val eventId: String,
-    val eventTitle: String,
-    val ticketType: String,
-    val quantity: Int,
-    val totalAmountKes: Int,
-    val qrCodeData: String,
-    val status: BookingStatus,
-    val paymentRef: String? = null,
-    val createdAt: Long,
-)
+sealed class BookingStep {
+    object Details : BookingStep()
+    object Form : BookingStep()
+    object Confirm : BookingStep()
+    object Success : BookingStep()
+}
 
-enum class BookingStatus { PENDING, CONFIRMED, FAILED }
+data class BookingUiState(
+    val step: BookingStep = BookingStep.Details,
+    val selectedTicket: TicketType = TicketType.Regular,
+    val quantity: Int = 1,
+    val firstName: String = "",
+    val lastName: String = "",
+    val email: String = "",
+    val phone: String = "",
+    val bookingRef: String = "",
+    val isLoading: Boolean = false,
+    val errors: Map<String, String> = emptyMap()
+) {
+    val total: Double get() = selectedTicket.price * quantity
+}
+
+enum class TicketType(val label: String, val price: Double) {
+    Regular("Regular", 1000.0),
+    VIP("VIP", 2500.0)
+}

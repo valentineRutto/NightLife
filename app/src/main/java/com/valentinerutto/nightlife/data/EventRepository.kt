@@ -41,4 +41,9 @@ class EventRepository(
         // fallback silently (offline-first)
     }
     }
+
+    suspend fun bookEvent(value: BookingUiState):String {
+return "BOJS1234"
+    }
+
 }
