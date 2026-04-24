@@ -54,7 +54,6 @@ val event = viewModel.eventByID(eventId)
                 onDone = onBack
             )
 
-            else -> {}
         }
 
     }
