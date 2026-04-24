@@ -28,8 +28,7 @@ data class BookingUiState(
     val phone: String = "",
     val bookingRef: String = "",
     val isLoading: Boolean = false,
-    val errors: Map<String, String> = emptyMap()
-) {
+    val errors: Map<String, String> = emptyMap()) {
     val total: Double get() = selectedTicket.price * quantity
 }
 

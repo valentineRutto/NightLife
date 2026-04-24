@@ -30,9 +30,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.valentinerutto.nightlife.data.BookingUiState
+import com.valentinerutto.nightlife.data.Event
 import com.valentinerutto.nightlife.data.TicketType
 
-// Shared small composables
 @Composable
 fun BookingTopBar(title: String, onBack: () -> Unit) {
     Row(
@@ -144,14 +144,14 @@ fun BookingTextField(
 }
 
 @Composable
-fun OrderSummaryCard(state: BookingUiState) {
+fun OrderSummaryCard(state: BookingUiState,event: Event) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            SummaryRow("Event", "Afrobeats Night")
+            SummaryRow("Event", event.title)
             SummaryRow("Ticket", "${state.selectedTicket.label} × ${state.quantity}")
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
             SummaryRow("Total", "KSh ${state.total.toFormattedPrice()}", isTotal = true)

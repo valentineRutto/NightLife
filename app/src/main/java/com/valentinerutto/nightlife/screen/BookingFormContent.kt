@@ -22,10 +22,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.valentinerutto.nightlife.data.BookingUiState
+import com.valentinerutto.nightlife.data.Event
 
 @Composable
 fun BookingFormContent(
     state: BookingUiState,
+    event: Event,
     onBack: () -> Unit,
     onFieldChange: (String, String) -> Unit,
     onContinue: () -> Unit
@@ -77,7 +79,7 @@ fun BookingFormContent(
             HorizontalDivider()
             Spacer(Modifier.height(16.dp))
             // Mini order summary
-            OrderSummaryCard(state = state)
+            OrderSummaryCard(state = state,event)
         }
 
         // Continue button

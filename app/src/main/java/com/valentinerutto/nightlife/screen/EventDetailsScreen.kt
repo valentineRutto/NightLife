@@ -38,6 +38,7 @@ val event = viewModel.eventByID(eventId)
                 onBookNow = { viewModel.goToStep(BookingStep.Form) }
             )
             BookingStep.Form -> BookingFormContent(
+                event = event,
                 state = bookingState,
                 onBack = { viewModel.goToStep(BookingStep.Details) },
                 onFieldChange = viewModel::updateField,
