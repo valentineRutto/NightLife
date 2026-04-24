@@ -1,6 +1,10 @@
 package com.valentinerutto.nightlife
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.valentinerutto.nightlife.di.appModule
 import com.valentinerutto.nightlife.di.databaseModule
 import com.valentinerutto.nightlife.di.networkingModule
@@ -14,6 +18,7 @@ class MyApplication: Application() {
         lateinit var INSTANCE: MyApplication
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate() {
         super.onCreate()
 
@@ -27,4 +32,21 @@ class MyApplication: Application() {
 
         }
 
-    }}
+        createNotificationChannel()
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createNotificationChannel() {
+        val channel = NotificationChannel(
+            "event_channel",
+            "Event Notifications",
+            NotificationManager.IMPORTANCE_HIGH
+        ).apply {
+            description = "Notifications for booked events"
+        }
+
+        val manager = getSystemService(NotificationManager::class.java)
+        manager.createNotificationChannel(channel)
+    }
+}
