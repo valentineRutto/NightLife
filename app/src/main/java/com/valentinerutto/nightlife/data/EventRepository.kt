@@ -1,5 +1,7 @@
 package com.valentinerutto.nightlife.data
 
+import com.valentinerutto.nightlife.MyApplication
+import com.valentinerutto.nightlife.data.NotificationWorker.Companion.schedule
 import com.valentinerutto.nightlife.data.local.EventDao
 import com.valentinerutto.nightlife.data.local.EventEntity
 import com.valentinerutto.nightlife.data.local.toDomain
@@ -43,8 +45,9 @@ fun getEventsByID(id:String):Event =
     }
     }
 
-    suspend fun bookEvent(value: BookingUiState):String {
-return "BOJS1234"
+    suspend fun bookEvent(value: BookingUiState) {
+        schedule(MyApplication.INSTANCE, value.bookingRef)
+
     }
 
 }

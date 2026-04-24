@@ -51,7 +51,7 @@ class EventDetailsViewModel(private val repository: EventRepository)
             _bookingState.update { it.copy(isLoading = true) }
             try {
                 val ref = repository.bookEvent(_bookingState.value)
-                _bookingState.update { it.copy(step = BookingStep.Success, bookingRef = ref, isLoading = false) }
+                _bookingState.update { it.copy(step = BookingStep.Success, bookingRef = "BJHIOSNue", isLoading = false) }
             } catch (e: Exception) {
                 _bookingState.update { it.copy(isLoading = false) }
             }

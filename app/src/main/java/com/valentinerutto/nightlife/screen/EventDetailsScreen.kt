@@ -1,5 +1,12 @@
 package com.valentinerutto.nightlife.screen
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -8,6 +15,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.valentinerutto.nightlife.data.BookingStep
 import com.valentinerutto.nightlife.data.Event
@@ -20,6 +28,15 @@ fun EventDetailsScreen(eventId: String, onBack: () -> Unit) {
     val bookingState by viewModel.bookingState.collectAsStateWithLifecycle()
 
 val event = viewModel.eventByID(eventId)
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            // proceed with booking
+        } else {
+        }
+    }
 
     AnimatedContent(
         targetState = bookingState.step,
@@ -52,10 +69,24 @@ val event = viewModel.eventByID(eventId)
             )
             BookingStep.Success -> SuccessContent(
                 state = bookingState,
-                onDone = onBack
+                onDone =onBack
             )
 
         }
 
+    }
+}
+
+object NotificationPermissionHelper {
+
+    fun isGranted(context: Context): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        } else {
+            true // auto-granted below Android 13
+        }
     }
 }

@@ -5,15 +5,17 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.work.Configuration
 import com.valentinerutto.nightlife.di.appModule
 import com.valentinerutto.nightlife.di.databaseModule
 import com.valentinerutto.nightlife.di.networkingModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
+import org.koin.androidx.workmanager.factory.KoinWorkerFactory
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.logger.Level
 
-class MyApplication: Application() {
+class MyApplication: Application() , Configuration.Provider{
     companion object {
         lateinit var INSTANCE: MyApplication
     }
@@ -32,10 +34,13 @@ class MyApplication: Application() {
 
         }
 
-        createNotificationChannel()
+      ///]\\\  createNotificationChannel()
 
     }
-
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
+            .setWorkerFactory(KoinWorkerFactory())
+            .build()
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel() {
         val channel = NotificationChannel(
